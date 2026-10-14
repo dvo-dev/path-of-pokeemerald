@@ -8,7 +8,7 @@ After completing the install instructions for your OS, proceed to [Building poke
 
 ## Dev container
 The repository includes a dev container for VS Code and GitHub Codespaces as an alternative to installing the build dependencies on your host.
-It provides Ubuntu 24.04, the ARM GCC toolchain, and the dependencies needed by the bundled headless mGBA test runner.
+It provides Ubuntu 24.04, the ARM GCC toolchain, GitHub Copilot CLI, and the dependencies needed by the bundled headless mGBA test runner.
 
 For local development:
 1. Install Docker Desktop (Windows/macOS) or Docker Engine (Linux), and the VS Code Dev Containers extension.
@@ -27,6 +27,17 @@ make check -j$(nproc)
 These commands build `pokeemerald.gba`, build with debug symbols, and run the tests, respectively.
 To apply changes to the container configuration, run **Dev Containers: Rebuild Container**.
 GitHub Codespaces uses the same configuration without requiring a local Docker installation.
+
+### GitHub Copilot CLI
+The image installs GitHub Copilot CLI using its official standalone installer, making `copilot` available to the `vscode` user without a separate Node.js installation.
+Run it from a container terminal:
+
+```console
+copilot
+```
+
+Use `/login` if prompted and sign in with a GitHub account that has Copilot access. Organization or enterprise policy must also allow Copilot CLI.
+Authentication happens after the container starts; credentials are not embedded in the image.
 
 ### Host architecture
 The image is built and run as `linux/amd64` because the bundled Linux test runner is x86-64.
