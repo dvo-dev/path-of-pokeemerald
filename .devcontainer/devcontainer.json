@@ -1,0 +1,30 @@
+{
+  "name": "path-of-pokeemerald",
+  "build": {
+    "dockerfile": "Dockerfile",
+    "options": ["--platform=linux/amd64"]
+  },
+  "runArgs": ["--platform=linux/amd64"],
+  "remoteUser": "vscode",
+  "postCreateCommand": "make -B -j$(nproc) tools check-tools",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "ms-vscode.cpptools",
+        "ms-vscode.makefile-tools"
+      ],
+      "settings": {
+        "C_Cpp.default.compilerPath": "/usr/bin/arm-none-eabi-gcc",
+        "C_Cpp.default.cStandard": "gnu17",
+        "C_Cpp.default.includePath": [
+          "${workspaceFolder}/include"
+        ],
+        "C_Cpp.default.defines": [
+          "MODERN=1",
+          "EMERALD",
+          "TESTING=0"
+        ]
+      }
+    }
+  }
+}

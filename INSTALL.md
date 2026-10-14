@@ -6,6 +6,37 @@ If you run into trouble, ask for help on Discord (see [README.md](README.md)).
 
 After completing the install instructions for your OS, proceed to [Building pokeemerald-expansion](#building-pokeemerald-expansion).
 
+## Dev container
+The repository includes a dev container for VS Code and GitHub Codespaces as an alternative to installing the build dependencies on your host.
+It provides Ubuntu 24.04, the ARM GCC toolchain, and the dependencies needed by the bundled headless mGBA test runner.
+
+For local development:
+1. Install Docker Desktop (Windows/macOS) or Docker Engine (Linux), and the VS Code Dev Containers extension.
+2. Clone this repository with Git, rather than downloading a ZIP, and open the repository folder in VS Code.
+3. Run **Dev Containers: Reopen in Container** from the Command Palette.
+4. Wait for setup to finish. The container rebuilds the repository's build and test tools, including any previously compiled for a different host.
+
+Inside the container, run:
+
+```console
+make -j$(nproc)
+make debug -j$(nproc)
+make check -j$(nproc)
+```
+
+These commands build `pokeemerald.gba`, build with debug symbols, and run the tests, respectively.
+To apply changes to the container configuration, run **Dev Containers: Rebuild Container**.
+GitHub Codespaces uses the same configuration without requiring a local Docker installation.
+
+### Host architecture
+The image is built and run as `linux/amd64` because the bundled Linux test runner is x86-64.
+It runs natively on x86-64 Docker hosts and through emulation on ARM64 hosts, including Apple Silicon; no host-detection script is needed.
+Docker Desktop includes emulation support. Standalone Docker Engine on ARM64 Linux requires QEMU/binfmt support configured on the Docker host.
+Compilation and testing under emulation can be significantly slower.
+
+The container runs Linux, not macOS. The [native macOS instructions](docs/install/mac/MAC_OS.md) are a separate host-based setup and are not needed inside the container.
+For local development, desktop tools such as mGBA and Porymap can remain on the host and open files from the shared checkout.
+
 ## Windows
 **Windows needs one of the systems to build the project**
 
