@@ -15,6 +15,7 @@ For local development:
 2. Clone this repository with Git, rather than downloading a ZIP, and open the repository folder in VS Code.
 3. Run **Dev Containers: Reopen in Container** from the Command Palette.
 4. Wait for setup to finish. The container rebuilds the repository's build and test tools, including any previously compiled for a different host.
+   These binaries are stored in the shared checkout and replace any host-built copies. When switching between host and container builds, run `make -B tools check-tools` in the environment you switch to; reopening an existing container does not repeat this setup.
 
 Inside the container, run:
 
