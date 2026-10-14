@@ -15,6 +15,6 @@ RUN apt-get update \
         python3 \
     && rm -rf /var/lib/apt/lists/*
 
-RUN curl -fsSL https://raw.githubusercontent.com/github/copilot-cli/main/install.sh -o /tmp/copilot-install.sh \
+RUN curl -fsSL https://gh.io/copilot-install -o /tmp/copilot-install.sh \
     && PREFIX=/usr/local bash /tmp/copilot-install.sh \
     && rm /tmp/copilot-install.sh
