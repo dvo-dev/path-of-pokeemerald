@@ -8,6 +8,7 @@ RUN apt-get update \
         libnewlib-arm-none-eabi \
         ca-certificates \
         curl \
+        gh \
         git \
         libpng-dev \
         libelf1t64 \
