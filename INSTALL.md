@@ -8,46 +8,7 @@ After completing the install instructions for your OS, proceed to [Building poke
 
 ## Dev container
 The repository includes a dev container for VS Code and GitHub Codespaces as an alternative to installing the build dependencies on your host.
-It provides Ubuntu 24.04, the ARM GCC toolchain, GitHub Copilot CLI, and the dependencies needed by the bundled headless mGBA test runner.
-
-For local development:
-1. Install Docker Desktop (Windows/macOS) or Docker Engine (Linux), and the VS Code Dev Containers extension.
-2. Clone this repository with Git, rather than downloading a ZIP, and open the repository folder in VS Code.
-3. Run **Dev Containers: Reopen in Container** from the Command Palette.
-4. Wait for setup to finish. The container rebuilds the repository's build and test tools, including any previously compiled for a different host.
-   These binaries are stored in the shared checkout and replace any host-built copies. When switching between host and container builds, run `make -B tools check-tools` in the environment you switch to; reopening an existing container does not repeat this setup.
-
-Inside the container, run:
-
-```console
-make -j$(nproc)
-make debug -j$(nproc)
-make check -j$(nproc)
-```
-
-These commands build `pokeemerald.gba`, build with debug symbols, and run the tests, respectively.
-To apply changes to the container configuration, run **Dev Containers: Rebuild Container**.
-GitHub Codespaces uses the same configuration without requiring a local Docker installation.
-
-### GitHub Copilot CLI
-The image installs GitHub Copilot CLI using its official standalone installer, making `copilot` available to the `vscode` user without a separate Node.js installation.
-Run it from a container terminal:
-
-```console
-copilot
-```
-
-Use `/login` if prompted and sign in with a GitHub account that has Copilot access. Organization or enterprise policy must also allow Copilot CLI.
-Authentication happens after the container starts; credentials are not embedded in the image.
-
-### Host architecture
-The image is built and run as `linux/amd64` because the bundled Linux test runner is x86-64.
-It runs natively on x86-64 Docker hosts and through emulation on ARM64 hosts, including Apple Silicon; no host-detection script is needed.
-Docker Desktop includes emulation support. Standalone Docker Engine on ARM64 Linux requires QEMU/binfmt support configured on the Docker host.
-Compilation and testing under emulation can be significantly slower.
-
-The container runs Linux, not macOS. The [native macOS instructions](docs/install/mac/MAC_OS.md) are a separate host-based setup and are not needed inside the container.
-For local development, desktop tools such as mGBA and Porymap can remain on the host and open files from the shared checkout.
+See the [dev container guide](DEVCONTAINER.md) for setup, build commands, GitHub authentication, and host architecture requirements.
 
 ## Windows
 **Windows needs one of the systems to build the project**
