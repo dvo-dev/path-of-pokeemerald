@@ -8,7 +8,6 @@ RUN apt-get update \
         libnewlib-arm-none-eabi \
         ca-certificates \
         curl \
-        gh \
         git \
         libpng-dev \
         libelf1t64 \
@@ -16,6 +15,7 @@ RUN apt-get update \
         python3 \
     && rm -rf /var/lib/apt/lists/*
 
-RUN curl -fsSL https://gh.io/copilot-install -o /tmp/copilot-install.sh \
-    && PREFIX=/usr/local bash /tmp/copilot-install.sh \
-    && rm /tmp/copilot-install.sh
+COPY github-auth.sh /usr/local/share/devcontainer/github-auth.sh
+
+RUN printf '\nsource /usr/local/share/devcontainer/github-auth.sh\n' \
+    >> /home/vscode/.bashrc

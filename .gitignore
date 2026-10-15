@@ -36,6 +36,8 @@ build/
 porymap.*.cfg
 prefabs.json
 .vscode/
+# Keep generated Dev Container Feature lockfiles local.
+/.devcontainer/devcontainer-lock.json
 *.a
 .fuse_hidden*
 *.sna
