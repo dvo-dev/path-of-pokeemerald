@@ -1,5 +1,5 @@
 {
-  "name": "path-of-pokeemerald",
+  "name": "pokeemerald-tempered",
   "build": {
     "dockerfile": "Dockerfile",
     "options": ["--platform=linux/amd64"]
