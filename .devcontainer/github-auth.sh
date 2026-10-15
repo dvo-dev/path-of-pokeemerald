@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-[[ $- == *i* ]] || return 0
+[[ $- == *i* && -t 0 ]] || return 0
 
 _devcontainer_github_auth() {
     local restore_xtrace=false credentials key value token=''
