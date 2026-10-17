@@ -72,6 +72,10 @@ The four switching changes only apply to trainers with Smart Switching AI (see [
 
 One upstream test, *"AI's Explosion scoring handles multiple move effects and the Explosion defense config"* in `test/battle/ai/ai.c`, now skips when `LAST_MON_PREFERS_NOT_SACRIFICE` is TRUE, like the three similar tests next to it.
 
+**Known limitation:** in double battles, upstream treats a trainer with no Pokémon left in reserve as being on its "last Pokémon" even while its partner is still on the field.
+In vanilla this affects Explosion users in the Gym Leader double-battle rematches (Roxanne, Wattson, Flannery, Tate & Liza).
+It has little effect in practice: upstream never counts Explosion as a KO in double battles, and Explosion also hits the AI's own partner.
+
 </details>
 
 ## Flags and vars in use
@@ -101,6 +105,7 @@ Expansion's smarter AI ("Smart Trainer") isn't given to any vanilla trainer.
 - Battle Frontier, Trainer Hill and Secret Base battles keep their own fixed AI.
 
 Code: `src/tempered/trainer_ai.c`, called from `GetAiFlags` in `src/battle_ai_main.c`.
+The class rule is unit-tested in `test/tempered/trainer_ai.c`. Upstream's AI tests replay recorded battles, which use their own AI flags, so they don't exercise this code.
 
 </details>
 
