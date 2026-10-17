@@ -19,6 +19,9 @@ Settings changed from upstream keep their original comment, prefixed with `[temp
 #define I_REUSABLE_TMS  TRUE  // [tempered] upstream: FALSE. In Gens5-8, TMs are reusable. ...
 ```
 
+New code lives in `src/tempered/` and `include/tempered/`.
+Where upstream code has to call it, the change is kept to a line or two, each marked with a `// [tempered]` comment.
+
 ## Config review status
 
 | Header | Status |
@@ -55,7 +58,7 @@ In the tables below, **Difficulty** marks changes that are part of Expert diffic
 <summary><code>ai.h</code>: 7 changes. Trainers heal, switch and use priority moves more reliably.</summary>
 
 Upstream uses chances below 100% for many AI decisions so the AI isn't perfectly predictable. Where we raised a chance, we aimed for about two-thirds: smarter, but still not fully predictable.
-The four switching changes only apply to trainers with Smart Switching AI.
+The four switching changes only apply to trainers with Smart Switching AI (see [Trainer AI](#trainer-ai)).
 
 | Config | Upstream | Tempered | Motivation | Difficulty | Save |
 |--------|----------|----------|------------|------------|------|
@@ -78,9 +81,28 @@ One upstream test, *"AI's Explosion scoring handles multiple move effects and th
 
 ## Code changes
 
-Changes outside the config headers, needed to switch some settings on.
+Changes outside the config headers.
 
-_None yet._
+### Trainer AI
+
+<details>
+<summary>Bosses and strong trainers use Smart Trainer AI; everyone else uses Basic Trainer AI.</summary>
+
+In vanilla Emerald, most route trainers only avoid obviously bad moves ("Check Bad Move"), and only Gym Leaders, rivals, Cooltrainers and a few others also pick effective moves and go for KOs ("Basic Trainer").
+Expansion's smarter AI ("Smart Trainer") isn't given to any vanilla trainer.
+
+| Trainer classes | AI | Difficulty | Save |
+|-----------------|----|------------|------|
+| Gym Leader, Elite Four, Champion, Rival, Team Aqua/Magma Leader and Admin, Cooltrainer, Expert, Dragon Tamer, Old Couple, Winstrate, Pokémon Ranger | Smart Trainer: switches out of bad matchups, picks better switch-ins, doesn't fall for PP stalling, and knows the player's moves, abilities and items | Yes | No |
+| Every other class | Basic Trainer: picks effective moves and goes for KOs | Yes | No |
+
+- The extra AI is added on top of each trainer's own AI, so per-trainer behaviour such as some Gym Leaders' "Risky" AI is kept.
+- In-game partners follow the same rule, so Steven (listed as a Rival) is a Smart Trainer in the Mossdeep Space Center battle, matching Maxie and Tabitha.
+- Battle Frontier, Trainer Hill and Secret Base battles keep their own fixed AI.
+
+Code: `src/tempered/trainer_ai.c`, called from `GetAiFlags` in `src/battle_ai_main.c`.
+
+</details>
 
 ## Difficulty
 
@@ -92,13 +114,13 @@ This table notes how each Expert setting could become switchable in-game.
 |----------------|------------------|-------------------------------------|
 | AI switching chances (`ai.h`: free turn, Toxic, Curse, Intimidate) | Config values | All switch chances are read through `GetSwitchChance` in `src/battle_ai_switch.c`, which upstream marks as the place to vary them by difficulty; return the upstream values in Normal mode. |
 | AI healing, priority and self-KO choices (`ai.h`: `SHOULD_RECOVER_CHANCE`, `PRIORITIZE_LAST_CHANCE_CHANCE`, `LAST_MON_PREFERS_NOT_SACRIFICE`) | Config values | Read directly where used in `src/battle_ai_main.c` and `src/battle_ai_util.c`; replace each use with a small helper that returns the upstream value in Normal mode. |
+| Smarter trainer AI | `Tempered_GetExtraTrainerAiFlags` in `src/tempered/trainer_ai.c` | Return no extra flags in Normal mode, which restores each trainer's vanilla AI. |
 
 ### Planned for later
 
 - Normal (vanilla) difficulty mode.
 - Choosing a difficulty in-game, e.g. at the start of a new game.
 - Expert-specific trainer teams, using upstream's `B_VAR_DIFFICULTY`.
-- Stronger trainer AI: give Gym Leaders, the Elite Four, the Champion, rivals, Team Aqua/Magma leaders and admins, Cooltrainers, Experts, Dragon Tamers, Old Couples, the Winstrates and Pokémon Rangers Smart Trainer AI, and everyone else Basic Trainer AI.
-  Open questions:
-  - Whether bosses should know all of the player's moves, abilities and items ("Omniscient"), only what they've seen, or a random subset.
-  - Whether the AI should switch out of matchups it would lose (`SHOULD_SWITCH_LOSES_1V1_PERCENTAGE`, currently 0).
+- Trainer AI knowledge: Smart Trainer AI currently knows all of the player's moves, abilities and items ("Omniscient").
+  Consider only what it has seen, educated guesses (upstream's Assume STAB, Assume Status Moves and Weigh Ability Prediction AI), or knowing a random subset.
+- Whether the AI should switch out of matchups it would lose (`SHOULD_SWITCH_LOSES_1V1_PERCENTAGE`, currently 0).
